@@ -38,12 +38,13 @@ class WindowManager {
 
   final MethodChannel _channel = const MethodChannel('window_manager');
 
-  ObserverList<WindowListener>? _listeners = ObserverList<WindowListener>();
+  final ObserverList<WindowListener>? _listeners =
+      ObserverList<WindowListener>();
 
   Future<void> _methodCallHandler(MethodCall call) async {
     if (_listeners == null) return;
 
-    for (final WindowListener listener in listeners) {
+    for (final listener in listeners) {
       if (!_listeners!.contains(listener)) {
         return;
       }
@@ -52,7 +53,7 @@ class WindowManager {
 
       String eventName = call.arguments['eventName'];
       listener.onWindowEvent(eventName);
-      Map<String, Function> funcMap = {
+      var funcMap = <String, Function>{
         kWindowEventClose: listener.onWindowClose,
         kWindowEventFocus: listener.onWindowFocus,
         kWindowEventBlur: listener.onWindowBlur,
@@ -72,8 +73,7 @@ class WindowManager {
   }
 
   List<WindowListener> get listeners {
-    final List<WindowListener> localListeners =
-        List<WindowListener>.from(_listeners!);
+    final localListeners = List<WindowListener>.from(_listeners!);
     return localListeners;
   }
 
@@ -104,9 +104,9 @@ class WindowManager {
   ]) async {
     await _channel.invokeMethod('waitUntilReadyToShow');
 
-    bool _isFullScreen = await isFullScreen();
-    bool _isMaximized = await isMaximized();
-    bool _isMinimized = await isMinimized();
+    var _isFullScreen = await isFullScreen();
+    var _isMaximized = await isMaximized();
+    var _isMinimized = await isMinimized();
 
     if (_isFullScreen) await setFullScreen(false);
     if (_isMaximized) await unmaximize();
@@ -146,13 +146,13 @@ class WindowManager {
 
   /// Check if is intercepting the native close signal.
   Future<bool> isPreventClose() async {
-    return await _channel.invokeMethod("isPreventClose");
+    return await _channel.invokeMethod('isPreventClose');
   }
 
   /// Set if intercept the native close signal. May useful when combine with the onclose event listener.
   /// This will also prevent the manually triggered close event.
   Future<void> setPreventClose(bool isPreventClose) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = {
       'isPreventClose': isPreventClose,
     };
     await _channel.invokeMethod('setPreventClose', arguments);
@@ -177,13 +177,20 @@ class WindowManager {
     return await _channel.invokeMethod('isFocused');
   }
 
+  /// Returns `bool` - Whether app is active
+  ///
+  /// @platforms macos
+  Future<bool> isActive() async {
+    return await _channel.invokeMethod('isActive');
+  }
+
   /// Shows and gives focus to the window.
   Future<void> show({bool inactive = false}) async {
-    bool isMinimized = await this.isMinimized();
+    var isMinimized = await this.isMinimized();
     if (isMinimized) {
-      await this.restore();
+      await restore();
     }
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'inactive': inactive,
     };
     await _channel.invokeMethod('show', arguments);
@@ -239,7 +246,7 @@ class WindowManager {
 
   /// Sets whether the window should be in fullscreen mode.
   Future<void> setFullScreen(bool isFullScreen) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'isFullScreen': isFullScreen,
     };
     await _channel.invokeMethod('setFullScreen', arguments);
@@ -247,7 +254,7 @@ class WindowManager {
 
   /// This will make a window maintain an aspect ratio.
   Future<void> setAspectRatio(double aspectRatio) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'aspectRatio': aspectRatio,
     };
     await _channel.invokeMethod('setAspectRatio', arguments);
@@ -255,7 +262,7 @@ class WindowManager {
 
   /// Sets the background color of the window.
   Future<void> setBackgroundColor(Color backgroundColor) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'backgroundColorA': backgroundColor.alpha,
       'backgroundColorR': backgroundColor.red,
       'backgroundColorG': backgroundColor.green,
@@ -269,23 +276,23 @@ class WindowManager {
     Alignment alignment, {
     bool animate = false,
   }) async {
-    Size windowSize = await getSize();
-    Offset position = await calcWindowPosition(windowSize, alignment);
-    await this.setPosition(position, animate: animate);
+    var windowSize = await getSize();
+    var position = await calcWindowPosition(windowSize, alignment);
+    await setPosition(position, animate: animate);
   }
 
   /// Moves window to the center of the screen.
   Future<void> center({
     bool animate = false,
   }) async {
-    Size windowSize = await getSize();
-    Offset position = await calcWindowPosition(windowSize, Alignment.center);
-    await this.setPosition(position, animate: animate);
+    var windowSize = await getSize();
+    var position = await calcWindowPosition(windowSize, Alignment.center);
+    await setPosition(position, animate: animate);
   }
 
   /// Returns `Rect` - The bounds of the window as Object.
   Future<Rect> getBounds() async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'devicePixelRatio': window.devicePixelRatio,
     };
     final Map<dynamic, dynamic> resultData = await _channel.invokeMethod(
@@ -308,7 +315,7 @@ class WindowManager {
     Size? size,
     bool animate = false,
   }) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'devicePixelRatio': window.devicePixelRatio,
       'x': bounds?.topLeft.dx ?? position?.dx,
       'y': bounds?.topLeft.dy ?? position?.dy,
@@ -321,7 +328,7 @@ class WindowManager {
 
   /// Returns `Size` - Contains the window's width and height.
   Future<Size> getSize() async {
-    Rect bounds = await getBounds();
+    var bounds = await getBounds();
     return bounds.size;
   }
 
@@ -336,7 +343,7 @@ class WindowManager {
 
   /// Returns `Offset` - Contains the window's current position.
   Future<Offset> getPosition() async {
-    Rect bounds = await getBounds();
+    var bounds = await getBounds();
     return bounds.topLeft;
   }
 
@@ -351,7 +358,7 @@ class WindowManager {
 
   /// Sets the minimum size of window to `width` and `height`.
   Future<void> setMinimumSize(Size size) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'devicePixelRatio': window.devicePixelRatio,
       'width': size.width,
       'height': size.height,
@@ -361,7 +368,7 @@ class WindowManager {
 
   /// Sets the maximum size of window to `width` and `height`.
   Future<void> setMaximumSize(Size size) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'devicePixelRatio': window.devicePixelRatio,
       'width': size.width,
       'height': size.height,
@@ -376,7 +383,7 @@ class WindowManager {
 
   /// Sets whether the window can be manually resized by the user.
   Future<void> setResizable(bool isResizable) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'isResizable': isResizable,
     };
     await _channel.invokeMethod('setResizable', arguments);
@@ -393,7 +400,7 @@ class WindowManager {
   ///
   /// @platforms macos
   Future<void> setMovable(bool isMovable) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'isMovable': isMovable,
     };
     await _channel.invokeMethod('setMovable', arguments);
@@ -410,7 +417,7 @@ class WindowManager {
   ///
   /// @platforms macos,windows
   Future<void> setMinimizable(bool isMinimizable) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'isMinimizable': isMinimizable,
     };
     await _channel.invokeMethod('setMinimizable', arguments);
@@ -442,7 +449,7 @@ class WindowManager {
   ///
   /// @platforms macos,windows
   Future<void> setClosable(bool isClosable) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'isClosable': isClosable,
     };
     await _channel.invokeMethod('setClosable', arguments);
@@ -455,7 +462,7 @@ class WindowManager {
 
   /// Sets whether the window should show always on top of other windows.
   Future<void> setAlwaysOnTop(bool isAlwaysOnTop) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'isAlwaysOnTop': isAlwaysOnTop,
     };
     await _channel.invokeMethod('setAlwaysOnTop', arguments);
@@ -470,7 +477,7 @@ class WindowManager {
   ///
   /// @platforms linux
   Future<void> setAlwaysOnBottom(bool isAlwaysOnBottom) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'isAlwaysOnBottom': isAlwaysOnBottom,
     };
     await _channel.invokeMethod('setAlwaysOnBottom', arguments);
@@ -483,7 +490,7 @@ class WindowManager {
 
   /// Changes the title of native window to title.
   Future<void> setTitle(String title) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'title': title,
     };
     await _channel.invokeMethod('setTitle', arguments);
@@ -494,7 +501,7 @@ class WindowManager {
     TitleBarStyle titleBarStyle, {
     bool windowButtonVisibility = true,
   }) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'titleBarStyle': describeEnum(titleBarStyle),
       'windowButtonVisibility': windowButtonVisibility,
     };
@@ -513,7 +520,7 @@ class WindowManager {
 
   /// Makes the window not show in the taskbar / dock.
   Future<void> setSkipTaskbar(bool isSkipTaskbar) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'isSkipTaskbar': isSkipTaskbar,
     };
     await _channel.invokeMethod('setSkipTaskbar', arguments);
@@ -523,7 +530,7 @@ class WindowManager {
   ///
   /// @platforms macos,windows
   Future<void> setProgressBar(double progress) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'progress': progress,
     };
     await _channel.invokeMethod('setProgressBar', arguments);
@@ -533,7 +540,7 @@ class WindowManager {
   ///
   /// @platforms windows
   Future<void> setIcon(String iconPath) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'iconPath': path.joinAll([
         path.dirname(Platform.resolvedExecutable),
         'data/flutter_assets',
@@ -555,7 +562,7 @@ class WindowManager {
   ///
   /// @platforms macos,windows
   Future<void> setHasShadow(bool hasShadow) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'hasShadow': hasShadow,
     };
     await _channel.invokeMethod('setHasShadow', arguments);
@@ -568,7 +575,7 @@ class WindowManager {
 
   /// Sets the opacity of the window.
   Future<void> setOpacity(double opacity) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'opacity': opacity,
     };
     await _channel.invokeMethod('setOpacity', arguments);
@@ -576,7 +583,7 @@ class WindowManager {
 
   /// Sets the brightness of the window.
   Future<void> setBrightness(Brightness brightness) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'brightness': describeEnum(brightness),
     };
     await _channel.invokeMethod('setBrightness', arguments);
@@ -586,7 +593,7 @@ class WindowManager {
   ///
   /// All mouse events happened in this window will be passed to the window below this window, but if this window has focus, it will still receive keyboard events.
   Future<void> setIgnoreMouseEvents(bool ignore, {bool forward = false}) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'ignore': ignore,
       'forward': forward,
     };
@@ -594,7 +601,7 @@ class WindowManager {
   }
 
   Future<void> popUpWindowMenu() async {
-    final Map<String, dynamic> arguments = {};
+    final arguments = <String, dynamic>{};
     await _channel.invokeMethod('popUpWindowMenu', arguments);
   }
 
@@ -610,17 +617,17 @@ class WindowManager {
     return _channel.invokeMethod<bool>(
       'startResizing',
       {
-        "resizeEdge": describeEnum(resizeEdge),
-        "top": resizeEdge == ResizeEdge.top ||
+        'resizeEdge': describeEnum(resizeEdge),
+        'top': resizeEdge == ResizeEdge.top ||
             resizeEdge == ResizeEdge.topLeft ||
             resizeEdge == ResizeEdge.topRight,
-        "bottom": resizeEdge == ResizeEdge.bottom ||
+        'bottom': resizeEdge == ResizeEdge.bottom ||
             resizeEdge == ResizeEdge.bottomLeft ||
             resizeEdge == ResizeEdge.bottomRight,
-        "right": resizeEdge == ResizeEdge.right ||
+        'right': resizeEdge == ResizeEdge.right ||
             resizeEdge == ResizeEdge.topRight ||
             resizeEdge == ResizeEdge.bottomRight,
-        "left": resizeEdge == ResizeEdge.left ||
+        'left': resizeEdge == ResizeEdge.left ||
             resizeEdge == ResizeEdge.topLeft ||
             resizeEdge == ResizeEdge.bottomLeft,
       },
