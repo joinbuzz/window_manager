@@ -102,6 +102,10 @@ public class WindowManager: NSObject, NSWindowDelegate {
         return mainWindow.isKeyWindow
     }
     
+    public func isActive() -> Bool {
+        return NSApp.isActive
+    }
+    
     public func show() {
         mainWindow.setIsVisible(true)
         DispatchQueue.main.async {
@@ -113,6 +117,7 @@ public class WindowManager: NSObject, NSWindowDelegate {
     public func hide() {
         DispatchQueue.main.async {
             self.mainWindow.orderOut(nil)
+            NSApp.deactivate()
         }
     }
     

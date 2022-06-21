@@ -82,6 +82,9 @@ public class WindowManagerPlugin: NSObject, FlutterPlugin {
         case "isFocused":
             result(windowManager.isFocused())
             break
+        case "isActive":
+               result(windowManager.isActive())
+               break
         case "show":
             windowManager.show()
             result(true)
