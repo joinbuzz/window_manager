@@ -94,6 +94,11 @@ public class WindowManager: NSObject, NSWindowDelegate {
         mainWindow.makeKeyAndOrderFront(nil)
     }
     
+    public func showPopup() {
+        mainWindow.hidesOnDeactivate = false
+        mainWindow.orderFrontRegardless()
+    }
+    
     public func blur() {
         mainWindow.orderBack(nil)
     }
