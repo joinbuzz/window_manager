@@ -163,6 +163,11 @@ class WindowManager {
     await _channel.invokeMethod('focus');
   }
 
+  /// Focuses on the window.
+  Future<void> showPopup() async {
+    await _channel.invokeMethod('showPopup');
+  }
+
   /// Removes focus from the window.
   ///
   /// @platforms macos,windows
