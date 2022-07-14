@@ -112,6 +112,7 @@ public class WindowManager: NSObject, NSWindowDelegate {
     }
     
     public func show() {
+        mainWindow.hidesOnDeactivate = true
         mainWindow.setIsVisible(true)
         DispatchQueue.main.async {
             self.mainWindow.makeKeyAndOrderFront(nil)
