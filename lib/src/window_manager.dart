@@ -161,7 +161,9 @@ class WindowManager {
     await _channel.invokeMethod('focus');
   }
 
-  /// Focuses on the window.
+  /// Shows a notification like popup as an inactive, floating window
+  ///
+  /// @patform macos
   Future<void> showPopup() async {
     await _channel.invokeMethod('showPopup');
   }
@@ -214,9 +216,12 @@ class WindowManager {
     return await _channel.invokeMethod('isMaximized');
   }
 
-  /// Maximizes the window.
-  Future<void> maximize() async {
-    await _channel.invokeMethod('maximize');
+  /// Maximizes the window. `vertically` simulates aero snap, only works on Windows
+  Future<void> maximize({bool vertically = false}) async {
+    final arguments = <String, dynamic>{
+      'vertically': vertically,
+    };
+    await _channel.invokeMethod('maximize', arguments);
   }
 
   /// Unmaximizes the window.
@@ -333,7 +338,7 @@ class WindowManager {
   }
 
   /// Resizes the window to `width` and `height`.
-  Future<void> setSize(Size size, {animate = false}) async {
+  Future<void> setSize(Size size, {bool animate = false}) async {
     await setBounds(
       null,
       size: size,
@@ -382,8 +387,8 @@ class WindowManager {
   }
 
   /// Sets whether the window can be manually resized by the user.
-  setResizable(isResizable) {
-    final arguments = <String, dynamic>{
+  void setResizable(bool isResizable) {
+    final arguments = {
       'isResizable': isResizable,
     };
     _channel.invokeMethod('setResizable', arguments);
@@ -399,8 +404,8 @@ class WindowManager {
   /// Sets whether the window can be moved by user.
   ///
   /// @platforms macos
-  setMovable(isMovable) {
-    final arguments = <String, dynamic>{
+  void setMovable(bool isMovable) {
+    final arguments = {
       'isMovable': isMovable,
     };
     _channel.invokeMethod('setMovable', arguments);
@@ -416,8 +421,8 @@ class WindowManager {
   /// Sets whether the window can be manually minimized by user.
   ///
   /// @platforms macos,windows
-  setMinimizable(isMinimizable) {
-    final arguments = <String, dynamic>{
+  void setMinimizable(bool isMinimizable) {
+    final arguments = {
       'isMinimizable': isMinimizable,
     };
     _channel.invokeMethod('setMinimizable', arguments);

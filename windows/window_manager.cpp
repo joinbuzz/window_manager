@@ -75,7 +75,7 @@ class WindowManager {
   void WindowManager::Hide();
   bool WindowManager::IsVisible();
   bool WindowManager::IsMaximized();
-  void WindowManager::Maximize();
+  void WindowManager::Maximize(const flutter::EncodableMap& args);
   void WindowManager::Unmaximize();
   bool WindowManager::IsMinimized();
   void WindowManager::Minimize();
@@ -258,13 +258,23 @@ bool WindowManager::IsMaximized() {
   return windowPlacement.showCmd == SW_MAXIMIZE;
 }
 
-void WindowManager::Maximize() {
-  HWND mainWindow = GetMainWindow();
-  WINDOWPLACEMENT windowPlacement;
-  GetWindowPlacement(mainWindow, &windowPlacement);
+void WindowManager::Maximize(const flutter::EncodableMap& args) {
+  bool vertically =
+      std::get<bool>(args.at(flutter::EncodableValue("vertically")));
 
-  if (windowPlacement.showCmd != SW_MAXIMIZE) {
-    PostMessage(mainWindow, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+  HWND hwnd = GetMainWindow();
+  WINDOWPLACEMENT windowPlacement;
+  GetWindowPlacement(hwnd, &windowPlacement);
+
+  if (vertically) {
+    POINT cursorPos;
+    GetCursorPos(&cursorPos);
+    PostMessage(hwnd, WM_NCLBUTTONDBLCLK, HTTOP,
+                MAKELPARAM(cursorPos.x, cursorPos.y));
+  } else {
+    if (windowPlacement.showCmd != SW_MAXIMIZE) {
+      PostMessage(hwnd, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+    }
   }
 }
 
@@ -373,9 +383,12 @@ void WindowManager::SetFullScreen(const flutter::EncodableMap& args) {
     if (g_is_frameless_before_fullscreen)
       SetAsFrameless();
 
-    if (g_maximized_before_fullscreen)
-      Maximize();
-    else {
+    if (g_maximized_before_fullscreen) {
+      flutter::EncodableMap args2 = flutter::EncodableMap();
+      args2[flutter::EncodableValue("vertically")] =
+          flutter::EncodableValue(false);
+      Maximize(args2);
+    } else {
       ::SetWindowPos(
           mainWindow, NULL, g_frame_before_fullscreen.left,
           g_frame_before_fullscreen.top,
@@ -786,27 +799,30 @@ void WindowManager::StartResizing(const flutter::EncodableMap& args) {
   bool bottom = std::get<bool>(args.at(flutter::EncodableValue("bottom")));
   bool left = std::get<bool>(args.at(flutter::EncodableValue("left")));
   bool right = std::get<bool>(args.at(flutter::EncodableValue("right")));
+
   HWND hWnd = GetMainWindow();
   ReleaseCapture();
-  LONG command = SC_SIZE;
+  LONG command;
   if (top && !bottom && !right && !left) {
-    command |= WMSZ_TOP;
+    command = HTTOP;
   } else if (top && left && !bottom && !right) {
-    command |= WMSZ_TOPLEFT;
+    command = HTTOPLEFT;
   } else if (left && !top && !bottom && !right) {
-    command |= WMSZ_LEFT;
+    command = HTLEFT;
   } else if (right && !top && !left && !bottom) {
-    command |= WMSZ_RIGHT;
+    command = HTRIGHT;
   } else if (top && right && !left && !bottom) {
-    command |= WMSZ_TOPRIGHT;
+    command = HTTOPRIGHT;
   } else if (bottom && !top && !right && !left) {
-    command |= WMSZ_BOTTOM;
+    command = HTBOTTOM;
   } else if (bottom && left && !top && !right) {
-    command |= WMSZ_BOTTOMLEFT;
-  } else if (bottom && right && !top && !left) {
-    command |= WMSZ_BOTTOMRIGHT;
-  }
-  SendMessage(hWnd, WM_SYSCOMMAND, command, 0);
+    command = HTBOTTOMLEFT;
+  } else
+    command = HTBOTTOMRIGHT;
+  POINT cursorPos;
+  GetCursorPos(&cursorPos);
+  PostMessage(hWnd, WM_NCLBUTTONDOWN, command,
+              MAKELPARAM(cursorPos.x, cursorPos.y));
 }
 
 }  // namespace
