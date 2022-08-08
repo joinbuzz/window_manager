@@ -96,7 +96,10 @@ public class WindowManager: NSObject, NSWindowDelegate {
     
     public func showPopup() {
         mainWindow.hidesOnDeactivate = false
-        mainWindow.orderFrontRegardless()
+        DispatchQueue.main.async {
+            self.mainWindow.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+        }
     }
     
     public func blur() {
