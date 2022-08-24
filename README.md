@@ -75,6 +75,8 @@ English | [简体中文](./README-ZH.md)
         - [setMovable  `macos`](#setmovable--macos)
         - [isMinimizable  `macos`  `windows`](#isminimizable--macos--windows)
         - [setMinimizable  `macos`  `windows`](#setminimizable--macos--windows)
+        - [isMaximizable  `windows`](#isMaximizable--windows)
+        - [setMaximizable  `windows`](#setMaximizable--windows)
         - [isClosable  `macos`  `windows`](#isclosable--macos--windows)
         - [setClosable  `macos`  `windows`](#setclosable--macos--windows)
         - [isAlwaysOnTop](#isalwaysontop)
@@ -131,7 +133,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  window_manager: ^0.2.5
+  window_manager: ^0.2.6
 ```
 
 Or
@@ -517,7 +519,7 @@ Returns `bool` - Whether the window is maximized.
 
 ##### maximize
 
-Maximizes the window.
+Maximizes the window. `vertically` simulates aero snap, only works on Windows
 
 ##### unmaximize
 
@@ -619,10 +621,19 @@ Returns `bool` - Whether the window can be manually minimized by the user.
 Sets whether the window can be manually minimized by user.
 
 
-##### isClosable  `macos`  `windows`
+##### isClosable  `windows`
 
 Returns `bool` - Whether the window can be manually closed by user.
 
+
+##### isMaximizable  `windows`
+
+Returns `bool` - Whether the window can be manually maximized by the user.
+
+
+##### setMaximizable
+
+Sets whether the window can be manually maximized by the user.
 
 ##### setClosable  `macos`  `windows`
 
