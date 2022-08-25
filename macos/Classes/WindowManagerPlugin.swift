@@ -71,12 +71,15 @@ public class WindowManagerPlugin: NSObject, FlutterPlugin {
             windowManager.setPreventClose(args)
             result(true)
             break
-        case "focus":
-            windowManager.focus()
+        case "isHideWindowOnDeactivate":
+            result(windowManager.isHideWindowOnDeactivate())
+            break
+        case "setHideOnDeactivate":
+            windowManager.setHideOnDeactivate(args)
             result(true)
             break
-        case "showPopup":
-            windowManager.showPopup()
+        case "focus":
+            windowManager.focus()
             result(true)
             break
         case "blur":

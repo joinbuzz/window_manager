@@ -161,13 +161,6 @@ class WindowManager {
     await _channel.invokeMethod('focus');
   }
 
-  /// Shows a notification like popup as an inactive, floating window
-  ///
-  /// @patform macos
-  Future<void> showPopup() async {
-    await _channel.invokeMethod('showPopup');
-  }
-
   /// Removes focus from the window.
   ///
   /// @platforms macos,windows
@@ -394,6 +387,21 @@ class WindowManager {
     _channel.invokeMethod('setResizable', arguments);
   }
 
+  /// Returns `bool` - Whether the window gets automatically hidden when you click outside of it.
+  ///
+  /// @platforms macos
+  Future<bool> isHideWindowOnDeactivate() async {
+    return await _channel.invokeMethod('isHideWindowOnDeactivate');
+  }
+
+  /// Sets whether the window gets automatically hidden when you click outside of it.
+  Future<void> setHideOnDeactivate(bool hideOnDeactivate) async {
+    final arguments = {
+      'hideOnDeactivate': hideOnDeactivate,
+    };
+    await _channel.invokeMethod('setHideOnDeactivate', arguments);
+  }
+
   /// Returns `bool` - Whether the window can be moved by user.
   ///
   /// @platforms macos
@@ -444,7 +452,7 @@ class WindowManager {
 
   /// Sets whether the window can be manually maximized by the user.
   setMaximizable(bool isMaximizable) {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'isMaximizable': isMaximizable,
     };
     _channel.invokeListMethod('setMaximizable', arguments);
