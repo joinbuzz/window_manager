@@ -93,7 +93,7 @@ public class WindowManagerPlugin: NSObject, FlutterPlugin {
                result(windowManager.isActive())
                break
         case "show":
-            windowManager.show()
+            windowManager.show(args)
             result(true)
             break
         case "hide":
