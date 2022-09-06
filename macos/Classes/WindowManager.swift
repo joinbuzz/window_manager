@@ -114,11 +114,15 @@ public class WindowManager: NSObject, NSWindowDelegate {
         return NSApp.isActive
     }
     
-    public func show() {
+    public func show(_ args: [String: Any]) {
+        let inactive: Bool = args["inactive"] as! Bool;
+        let ignoringOtherApps: Bool = !inactive;
+        
         mainWindow.setIsVisible(true)
+        
         DispatchQueue.main.async {
             self.mainWindow.makeKeyAndOrderFront(nil)
-            NSApp.activate(ignoringOtherApps: true)
+            NSApp.activate(ignoringOtherApps: ignoringOtherApps)
         }
     }
     
