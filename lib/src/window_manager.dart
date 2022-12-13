@@ -69,6 +69,19 @@ class WindowManager {
         kWindowEventLeaveFullScreen: listener.onWindowLeaveFullScreen,
       };
       funcMap[eventName]!();
+
+      /// to prevent issue of showing window after user click outside of window
+      /// this code will reset the value of hiddenOnBlur flag
+      if (Platform.isWindows) {
+        if (eventName == kWindowEventBlur) {
+          Future.delayed(
+            Duration(milliseconds: 500),
+                () {
+              setHiddenOnBlur(hiddenOnBlur: false);
+            },
+          );
+        }
+      }
     }
   }
 
@@ -177,9 +190,39 @@ class WindowManager {
 
   /// Returns `bool` - Whether app is active
   ///
-  /// @platforms macos
+  /// @platforms macos,windows
   Future<bool> isActive() async {
     return await _channel.invokeMethod('isActive');
+  }
+
+  /// Returns `bool` - Whether app is hidden on Blur Event
+  ///
+  /// @platforms windows
+  Future<bool> isHiddenOnBlur() async {
+    return await _channel.invokeMethod('isHiddenOnBlur');
+  }
+
+  /// Sets whether the window is hidden on Blur event.
+  Future<void> setHiddenOnBlur({bool hiddenOnBlur = false}) async {
+    final arguments = <String, dynamic>{
+      'hiddenOnBlur': hiddenOnBlur,
+    };
+    return await _channel.invokeMethod('setHiddenOnBlur', arguments);
+  }
+
+  /// Returns `bool` - Whether the window gets automatically hidden when you click outside of it.
+  ///
+  /// @platforms macos,windows
+  Future<bool> isHideWindowOnDeactivate() async {
+    return await _channel.invokeMethod('isHideWindowOnDeactivate');
+  }
+
+  /// Sets whether the window gets automatically hidden when you click outside of it.
+  Future<void> setHideOnDeactivate(bool hideOnDeactivate) async {
+    final arguments = {
+      'hideOnDeactivate': hideOnDeactivate,
+    };
+    await _channel.invokeMethod('setHideOnDeactivate', arguments);
   }
 
   /// Shows and gives focus to the window.
@@ -385,21 +428,6 @@ class WindowManager {
       'isResizable': isResizable,
     };
     _channel.invokeMethod('setResizable', arguments);
-  }
-
-  /// Returns `bool` - Whether the window gets automatically hidden when you click outside of it.
-  ///
-  /// @platforms macos
-  Future<bool> isHideWindowOnDeactivate() async {
-    return await _channel.invokeMethod('isHideWindowOnDeactivate');
-  }
-
-  /// Sets whether the window gets automatically hidden when you click outside of it.
-  Future<void> setHideOnDeactivate(bool hideOnDeactivate) async {
-    final arguments = {
-      'hideOnDeactivate': hideOnDeactivate,
-    };
-    await _channel.invokeMethod('setHideOnDeactivate', arguments);
   }
 
   /// Returns `bool` - Whether the window can be moved by user.
