@@ -186,14 +186,6 @@ std::optional<LRESULT> WindowManagerPlugin::HandleWindowProc(HWND hWnd,
       _EmitEvent("focus");
     } else {
       _EmitEvent("blur");
-
-      /// logic to hide window on outside click(HideOnDeactivate)
-      if (window_manager->is_hide_on_deactivate_) {
-         /// using this flag to avoid click of tray icon when hideOnDeactive is on
-         /// because when hideOnDeactivate is on, it hides automatically no need to handle it from dart side
-         window_manager->is_hidden_on_blur = true;
-         window_manager->Hide();
-      }
     }
 
     if (window_manager->title_bar_style_ == "hidden" ||
