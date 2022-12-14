@@ -69,19 +69,6 @@ class WindowManager {
         kWindowEventLeaveFullScreen: listener.onWindowLeaveFullScreen,
       };
       funcMap[eventName]!();
-
-      /// to prevent issue of showing window after user click outside of window
-      /// this code will reset the value of hiddenOnBlur flag
-      if (Platform.isWindows) {
-        if (eventName == kWindowEventBlur) {
-          Future.delayed(
-            Duration(milliseconds: 500),
-                () {
-              setHiddenOnBlur(hiddenOnBlur: false);
-            },
-          );
-        }
-      }
     }
   }
 
