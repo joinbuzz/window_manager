@@ -190,6 +190,8 @@ class WindowManager {
   }
 
   /// Sets whether the window is hidden on Blur event.
+  ///
+  /// @platforms windows
   Future<void> setHiddenOnBlur({bool hiddenOnBlur = false}) async {
     final arguments = <String, dynamic>{
       'hiddenOnBlur': hiddenOnBlur,
@@ -205,6 +207,8 @@ class WindowManager {
   }
 
   /// Sets whether the window gets automatically hidden when you click outside of it.
+  ///
+  /// @platforms macos,windows
   Future<void> setHideOnDeactivate(bool hideOnDeactivate) async {
     final arguments = {
       'hideOnDeactivate': hideOnDeactivate,
