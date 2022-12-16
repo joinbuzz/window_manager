@@ -58,6 +58,9 @@ class WindowManager {
 
   bool is_resizing_ = false;
   bool is_moving_ = false;
+  bool is_active_ = true;
+  bool is_hide_on_deactivate_ = true;
+  bool is_hidden_on_blur_ = false;
 
   HWND GetMainWindow();
   void WindowManager::ForceRefresh();
@@ -71,6 +74,11 @@ class WindowManager {
   void WindowManager::Focus();
   void WindowManager::Blur();
   bool WindowManager::IsFocused();
+  bool WindowManager::IsActive();
+  bool WindowManager::IsHiddenOnBlur();
+  void WindowManager::SetHiddenOnBlur(const flutter::EncodableMap& args);
+  bool WindowManager::IsHideWindowOnDeactivate();
+  void WindowManager::SetHideOnDeactivate(const flutter::EncodableMap& args);
   void WindowManager::Show();
   void WindowManager::Hide();
   bool WindowManager::IsVisible();
@@ -228,6 +236,28 @@ void WindowManager::Blur() {
 
 bool WindowManager::IsFocused() {
   return GetMainWindow() == GetActiveWindow();
+}
+
+bool WindowManager::IsActive(){
+  return is_active_;
+}
+
+bool WindowManager::IsHiddenOnBlur(){
+  return is_hidden_on_blur_;
+}
+
+void WindowManager::SetHiddenOnBlur(const flutter::EncodableMap& args){
+  is_hidden_on_blur_  =
+      std::get<bool>(args.at(flutter::EncodableValue("hiddenOnBlur")));;
+}
+
+bool WindowManager::IsHideWindowOnDeactivate(){
+  return is_hide_on_deactivate_;
+}
+
+void WindowManager::SetHideOnDeactivate(const flutter::EncodableMap& args){
+   is_hide_on_deactivate_ =
+      std::get<bool>(args.at(flutter::EncodableValue("hideOnDeactivate")));
 }
 
 void WindowManager::Show() {

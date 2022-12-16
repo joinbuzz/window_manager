@@ -108,6 +108,16 @@ std::optional<LRESULT> WindowManagerPlugin::HandleWindowProc(HWND hWnd,
                                                              LPARAM lParam) {
   std::optional<LRESULT> result = std::nullopt;
 
+  /// added code to determine app is active or not
+  /// used for isActive() method
+  if (message == WM_ACTIVATE) {
+    if (LOWORD(wParam) == WA_INACTIVE) {
+      window_manager->is_active_ = true;
+    } else if (LOWORD(wParam) == WA_ACTIVE) {
+      window_manager->is_active_ = false;
+    }
+  }
+
   if (message == WM_NCCALCSIZE) {
     // This must always be first or else the one of other two ifs will execute
     //  when window is in full screen and we don't want that
@@ -331,6 +341,25 @@ void WindowManagerPlugin::HandleMethodCall(
   } else if (method_name.compare("isFocused") == 0) {
     bool value = window_manager->IsFocused();
     result->Success(flutter::EncodableValue(value));
+  } else if (method_name.compare("isActive") == 0) {
+    bool value = window_manager->IsActive();
+    result->Success(flutter::EncodableValue(value));
+  } else if (method_name.compare("isHiddenOnBlur") == 0) {
+    bool value = window_manager->IsHiddenOnBlur();
+    result->Success(flutter::EncodableValue(value));
+  } else if (method_name.compare("setHiddenOnBlur") == 0) {
+    const flutter::EncodableMap& args =
+        std::get<flutter::EncodableMap>(*method_call.arguments());
+    window_manager->SetHiddenOnBlur(args);
+    result->Success(flutter::EncodableValue(true));
+  } else if (method_name.compare("isHideWindowOnDeactivate") == 0) {
+    bool value = window_manager->IsHideWindowOnDeactivate();
+    result->Success(flutter::EncodableValue(value));
+  } else if (method_name.compare("setHideOnDeactivate") == 0) {
+    const flutter::EncodableMap& args =
+        std::get<flutter::EncodableMap>(*method_call.arguments());
+    window_manager->SetHideOnDeactivate(args);
+    result->Success(flutter::EncodableValue(true));
   } else if (method_name.compare("show") == 0) {
     window_manager->Show();
     result->Success(flutter::EncodableValue(true));
