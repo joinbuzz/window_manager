@@ -1,3 +1,39 @@
+## 0.3.0
+
+* Add integration test (#275)
+* [windows] add show and hide events (#274)
+* [linux] clean up state tracking (#273)
+* Add missing future return values (#272)
+* [linux] implement minimizable & maximizable (#270)
+* [linux] fix getTitle() crash when null (#269)
+* [linux] fix on_window_show and on_window_hide signatures (#268)
+
+## 0.2.9
+
+* [windows] Fix set maximizable throwing an error (#267)
+* [linux] clean up unused includes (#260)
+* [linux] fix window geometry hints (#257)
+* [linux] pass the plugin instance around as user data (#256)
+* [linux] fix `getOpacity()` (#255)
+* [Linux] use g_strcmp0() (#254)
+* [Linux] remove misleading C++-style default values (#253)
+* [Linux] implement `setBrightness()` (#252)
+* [Linux] fix frameless window & background color (#250)
+* [Linux] make `setTitleBarStyle()` GTK/HDY/CSD/SSD compatible (#249)
+
+## 0.2.8
+
+* Bump screen_retriever from 0.1.2 to 0.1.4
+* WindowOptions supports backgroundColor
+* [linux] fix: offset lost after invoking gtk hide on linux #241
+* [macos] Fix Unable to bridge NSNumber to Float #236
+* [linux] Introduce grabKeyboard() and ungrabKeyboard() #229
+
+## 0.2.7
+
+* [linux] fix bottom edge resizing (#209)
+* [linux] fix: cannot resize again after startResizing (#205)
+
 ## 0.2.6
 
 * [windows] Added `vertically` param to the `maximize` method.

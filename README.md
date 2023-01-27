@@ -21,101 +21,103 @@ English | [简体中文](./README-ZH.md)
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [window_manager](#window_manager)
-  - [Platform Support](#platform-support)
-  - [Quick Start](#quick-start)
-    - [Installation](#installation)
-    - [Usage](#usage)
-      - [Listening events](#listening-events)
-      - [Quit on close](#quit-on-close)
-        - [macOS](#macos)
-      - [Confirm before closing](#confirm-before-closing)
-      - [Hidden at launch](#hidden-at-launch)
-        - [macOS](#macos-1)
-        - [Windows](#windows)
-  - [Articles](#articles)
-  - [Who's using it?](#whos-using-it)
-  - [API](#api)
-    - [WindowManager](#windowmanager)
-      - [Methods](#methods)
-        - [waitUntilReadyToShow](#waituntilreadytoshow)
-        - [destroy](#destroy)
-        - [close](#close)
-        - [isPreventClose](#ispreventclose)
-        - [setPreventClose](#setpreventclose)
-        - [focus](#focus)
-        - [blur  `macos`  `windows`](#blur--macos--windows)
-        - [isFocused  `macos`  `windows`](#isfocused--macos--windows)
-        - [show](#show)
-        - [hide](#hide)
-        - [isVisible](#isvisible)
-        - [isMaximized](#ismaximized)
-        - [maximize](#maximize)
-        - [unmaximize](#unmaximize)
-        - [isMinimized](#isminimized)
-        - [minimize](#minimize)
-        - [restore](#restore)
-        - [isFullScreen](#isfullscreen)
-        - [setFullScreen](#setfullscreen)
-        - [setAspectRatio](#setaspectratio)
-        - [setBackgroundColor](#setbackgroundcolor)
-        - [setAlignment](#setalignment)
-        - [center](#center)
-        - [getBounds](#getbounds)
-        - [setBounds](#setbounds)
-        - [getSize](#getsize)
-        - [setSize](#setsize)
-        - [getPosition](#getposition)
-        - [setPosition](#setposition)
-        - [setMinimumSize](#setminimumsize)
-        - [setMaximumSize](#setmaximumsize)
-        - [isResizable](#isresizable)
-        - [setResizable](#setresizable)
-        - [isMovable  `macos`](#ismovable--macos)
-        - [setMovable  `macos`](#setmovable--macos)
-        - [isMinimizable  `macos`  `windows`](#isminimizable--macos--windows)
-        - [setMinimizable  `macos`  `windows`](#setminimizable--macos--windows)
-        - [isMaximizable  `windows`](#isMaximizable--windows)
-        - [setMaximizable  `windows`](#setMaximizable--windows)
-        - [isClosable  `macos`  `windows`](#isclosable--macos--windows)
-        - [setClosable  `macos`  `windows`](#setclosable--macos--windows)
-        - [isAlwaysOnTop](#isalwaysontop)
-        - [setAlwaysOnTop](#setalwaysontop)
-        - [isAlwaysOnBottom](#isalwaysonbottom)
-        - [setAlwaysOnBottom  `linux`](#setalwaysonbottom--linux)
-        - [getTitle](#gettitle)
-        - [setTitle](#settitle)
-        - [setTitleBarStyle](#settitlebarstyle)
-        - [getTitleBarHeight](#gettitlebarheight)
-        - [isSkipTaskbar](#isskiptaskbar)
-        - [setSkipTaskbar](#setskiptaskbar)
-        - [setProgressBar  `macos`](#setprogressbar--macos)
-        - [setIcon  `windows`](#seticon--windows)
-        - [hasShadow  `macos`  `windows`](#hasshadow--macos--windows)
-        - [setHasShadow  `macos`  `windows`](#sethasshadow--macos--windows)
-        - [getOpacity](#getopacity)
-        - [setOpacity](#setopacity)
-        - [setBrightness  `macos`  `windows`](#setbrightness--macos--windows)
-        - [setIgnoreMouseEvents](#setignoremouseevents)
-        - [startDragging](#startdragging)
-        - [startResizing  `linux`  `windows`](#startresizing--linux--windows)
-    - [WindowListener](#windowlistener)
-      - [Methods](#methods-1)
-        - [onWindowClose](#onwindowclose)
-        - [onWindowFocus](#onwindowfocus)
-        - [onWindowBlur](#onwindowblur)
-        - [onWindowMaximize](#onwindowmaximize)
-        - [onWindowUnmaximize](#onwindowunmaximize)
-        - [onWindowMinimize](#onwindowminimize)
-        - [onWindowRestore](#onwindowrestore)
-        - [onWindowResize](#onwindowresize)
-        - [onWindowResized  `macos`  `windows`](#onwindowresized--macos--windows)
-        - [onWindowMove](#onwindowmove)
-        - [onWindowMoved  `macos`  `windows`](#onwindowmoved--macos--windows)
-        - [onWindowEnterFullScreen](#onwindowenterfullscreen)
-        - [onWindowLeaveFullScreen](#onwindowleavefullscreen)
-        - [onWindowEvent](#onwindowevent)
-  - [License](#license)
+- [Platform Support](#platform-support)
+- [Quick Start](#quick-start)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [Listening events](#listening-events)
+    - [Quit on close](#quit-on-close)
+      - [macOS](#macos)
+    - [Confirm before closing](#confirm-before-closing)
+    - [Hidden at launch](#hidden-at-launch)
+      - [Linux](#linux)
+      - [macOS](#macos-1)
+      - [Windows](#windows)
+- [Articles](#articles)
+- [Who's using it?](#whos-using-it)
+- [API](#api)
+  - [WindowManager](#windowmanager)
+    - [Methods](#methods)
+      - [waitUntilReadyToShow](#waituntilreadytoshow)
+      - [destroy](#destroy)
+      - [close](#close)
+      - [isPreventClose](#ispreventclose)
+      - [setPreventClose](#setpreventclose)
+      - [focus](#focus)
+      - [blur  `macos`  `windows`](#blur--macos--windows)
+      - [isFocused  `macos`  `windows`](#isfocused--macos--windows)
+      - [show](#show)
+      - [hide](#hide)
+      - [isVisible](#isvisible)
+      - [isMaximized](#ismaximized)
+      - [maximize](#maximize)
+      - [unmaximize](#unmaximize)
+      - [isMinimized](#isminimized)
+      - [minimize](#minimize)
+      - [restore](#restore)
+      - [isFullScreen](#isfullscreen)
+      - [setFullScreen](#setfullscreen)
+      - [setAspectRatio](#setaspectratio)
+      - [setBackgroundColor](#setbackgroundcolor)
+      - [setAlignment](#setalignment)
+      - [center](#center)
+      - [getBounds](#getbounds)
+      - [setBounds](#setbounds)
+      - [getSize](#getsize)
+      - [setSize](#setsize)
+      - [getPosition](#getposition)
+      - [setPosition](#setposition)
+      - [setMinimumSize](#setminimumsize)
+      - [setMaximumSize](#setmaximumsize)
+      - [isResizable](#isresizable)
+      - [setResizable](#setresizable)
+      - [isMovable  `macos`](#ismovable--macos)
+      - [setMovable  `macos`](#setmovable--macos)
+      - [isMinimizable  `macos`  `windows`](#isminimizable--macos--windows)
+      - [setMinimizable  `macos`  `windows`](#setminimizable--macos--windows)
+      - [isClosable  `windows`](#isclosable--windows)
+      - [isMaximizable  `windows`](#ismaximizable--windows)
+      - [setMaximizable](#setmaximizable)
+      - [setClosable  `macos`  `windows`](#setclosable--macos--windows)
+      - [isAlwaysOnTop](#isalwaysontop)
+      - [setAlwaysOnTop](#setalwaysontop)
+      - [isAlwaysOnBottom](#isalwaysonbottom)
+      - [setAlwaysOnBottom  `linux`](#setalwaysonbottom--linux)
+      - [getTitle](#gettitle)
+      - [setTitle](#settitle)
+      - [setTitleBarStyle](#settitlebarstyle)
+      - [getTitleBarHeight](#gettitlebarheight)
+      - [isSkipTaskbar](#isskiptaskbar)
+      - [setSkipTaskbar](#setskiptaskbar)
+      - [setProgressBar  `macos`  `windows`](#setprogressbar--macos--windows)
+      - [setIcon  `windows`](#seticon--windows)
+      - [hasShadow  `macos`  `windows`](#hasshadow--macos--windows)
+      - [setHasShadow  `macos`  `windows`](#sethasshadow--macos--windows)
+      - [getOpacity](#getopacity)
+      - [setOpacity](#setopacity)
+      - [setBrightness](#setbrightness)
+      - [setIgnoreMouseEvents](#setignoremouseevents)
+      - [startDragging](#startdragging)
+      - [startResizing  `linux`  `windows`](#startresizing--linux--windows)
+      - [grabKeyboard  `linux`](#grabkeyboard--linux)
+      - [ungrabKeyboard  `linux`](#ungrabkeyboard--linux)
+  - [WindowListener](#windowlistener)
+    - [Methods](#methods-1)
+      - [onWindowClose](#onwindowclose)
+      - [onWindowFocus](#onwindowfocus)
+      - [onWindowBlur](#onwindowblur)
+      - [onWindowMaximize](#onwindowmaximize)
+      - [onWindowUnmaximize](#onwindowunmaximize)
+      - [onWindowMinimize](#onwindowminimize)
+      - [onWindowRestore](#onwindowrestore)
+      - [onWindowResize](#onwindowresize)
+      - [onWindowResized  `macos`  `windows`](#onwindowresized--macos--windows)
+      - [onWindowMove](#onwindowmove)
+      - [onWindowMoved  `macos`  `windows`](#onwindowmoved--macos--windows)
+      - [onWindowEnterFullScreen](#onwindowenterfullscreen)
+      - [onWindowLeaveFullScreen](#onwindowleavefullscreen)
+      - [onWindowEvent](#onwindowevent)
+- [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -133,7 +135,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  window_manager: ^0.2.6
+  window_manager: ^0.3.0
 ```
 
 Or
@@ -357,6 +359,39 @@ class _HomePageState extends State<HomePage> with WindowListener {
 ```
 
 #### Hidden at launch
+
+##### Linux
+
+Change the file `linux/my_application.cc` as follows:
+
+```diff
+
+...
+
+// Implements GApplication::activate.
+static void my_application_activate(GApplication* application) {
+  
+  ...
+
+  gtk_window_set_default_size(window, 1280, 720);
+-  gtk_widget_show(GTK_WIDGET(window));
++  gtk_widget_realize(GTK_WIDGET(window));
+
+  g_autoptr(FlDartProject) project = fl_dart_project_new();
+  fl_dart_project_set_dart_entrypoint_arguments(project, self->dart_entrypoint_arguments);
+
+  FlView* view = fl_view_new(project);
+  gtk_widget_show(GTK_WIDGET(view));
+  gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(view));
+
+  fl_register_plugins(FL_PLUGIN_REGISTRY(view));
+
+  gtk_widget_grab_focus(GTK_WIDGET(view));
+}
+
+...
+
+```
 
 ##### macOS
 
@@ -681,7 +716,7 @@ Returns `bool` - Whether skipping taskbar is enabled.
 
 Makes the window not show in the taskbar / dock.
 
-##### setProgressBar  `macos`
+##### setProgressBar  `macos`  `windows`
 
 Sets progress value in progress bar. Valid range is [0, 1.0].
 
@@ -709,10 +744,9 @@ Returns `double` - between 0.0 (fully transparent) and 1.0 (fully opaque).
 
 Sets the opacity of the window.
 
-##### setBrightness  `macos`  `windows`
+##### setBrightness
 
 Sets the brightness of the window.
-
 
 ##### setIgnoreMouseEvents
 
@@ -728,6 +762,14 @@ Starts a window drag based on the specified mouse-down event.
 
 Starts a window resize based on the specified mouse-down & mouse-move event.
 
+
+##### grabKeyboard  `linux`
+
+Grabs the keyboard.
+
+##### ungrabKeyboard  `linux`
+
+Ungrabs the keyboard.
 
 ### WindowListener
 

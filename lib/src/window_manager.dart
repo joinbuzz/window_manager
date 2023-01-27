@@ -121,6 +121,8 @@ class WindowManager {
     if (options?.alwaysOnTop != null)
       await setAlwaysOnTop(options!.alwaysOnTop!);
     if (options?.fullScreen != null) await setFullScreen(options!.fullScreen!);
+    if (options?.backgroundColor != null)
+      await setBackgroundColor(options!.backgroundColor!);
     if (options?.skipTaskbar != null)
       await setSkipTaskbar(options!.skipTaskbar!);
     if (options?.title != null) await setTitle(options!.title!);
@@ -414,11 +416,11 @@ class WindowManager {
   }
 
   /// Sets whether the window can be manually resized by the user.
-  void setResizable(bool isResizable) {
-    final arguments = {
+  Future<void> setResizable(bool isResizable) async {
+    final Map<String, dynamic> arguments = {
       'isResizable': isResizable,
     };
-    _channel.invokeMethod('setResizable', arguments);
+    await _channel.invokeMethod('setResizable', arguments);
   }
 
   /// Returns `bool` - Whether the window can be moved by user.
@@ -431,11 +433,11 @@ class WindowManager {
   /// Sets whether the window can be moved by user.
   ///
   /// @platforms macos
-  void setMovable(bool isMovable) {
-    final arguments = {
+  Future<void> setMovable(bool isMovable) async {
+    final Map<String, dynamic> arguments = {
       'isMovable': isMovable,
     };
-    _channel.invokeMethod('setMovable', arguments);
+    await _channel.invokeMethod('setMovable', arguments);
   }
 
   /// Returns `bool` - Whether the window can be manually minimized by the user.
@@ -448,11 +450,11 @@ class WindowManager {
   /// Sets whether the window can be manually minimized by user.
   ///
   /// @platforms macos,windows
-  void setMinimizable(bool isMinimizable) {
-    final arguments = {
+  Future<void> setMinimizable(bool isMinimizable) async {
+    final Map<String, dynamic> arguments = {
       'isMinimizable': isMinimizable,
     };
-    _channel.invokeMethod('setMinimizable', arguments);
+    await _channel.invokeMethod('setMinimizable', arguments);
   }
 
   /// Returns `bool` - Whether the window can be manually closed by user.
@@ -470,11 +472,11 @@ class WindowManager {
   }
 
   /// Sets whether the window can be manually maximized by the user.
-  setMaximizable(bool isMaximizable) {
-    final arguments = <String, dynamic>{
+  Future<void> setMaximizable(bool isMaximizable) async {
+    final Map<String, dynamic> arguments = {
       'isMaximizable': isMaximizable,
     };
-    _channel.invokeListMethod('setMaximizable', arguments);
+    await _channel.invokeMethod('setMaximizable', arguments);
   }
 
   /// Sets whether the window can be manually closed by user.
@@ -560,7 +562,7 @@ class WindowManager {
 
   /// Sets progress value in progress bar. Valid range is [0, 1.0].
   ///
-  /// @platforms macos
+  /// @platforms macos,windows
   Future<void> setProgressBar(double progress) async {
     final arguments = <String, dynamic>{
       'progress': progress,
@@ -614,8 +616,6 @@ class WindowManager {
   }
 
   /// Sets the brightness of the window.
-  ///
-  /// @platforms macos,windows
   Future<void> setBrightness(Brightness brightness) async {
     final arguments = <String, dynamic>{
       'brightness': describeEnum(brightness),
@@ -668,25 +668,16 @@ class WindowManager {
     );
   }
 
-  Future<bool> isSubWindow() async {
-    return await _channel.invokeMethod('isSubWindow');
+  /// Grabs the keyboard.
+  /// @platforms linux
+  Future<bool> grabKeyboard() async {
+    return await _channel.invokeMethod('grabKeyboard');
   }
 
-  Future<void> createSubWindow({
-    Size? size,
-    Offset? position,
-    bool center = true,
-    required String title,
-  }) async {
-    final arguments = <String, dynamic>{
-      'width': size?.width,
-      'height': size?.height,
-      'x': position?.dx,
-      'y': position?.dy,
-      'center': center,
-      'title': title,
-    }..removeWhere((key, value) => value == null);
-    await _channel.invokeMethod('createSubWindow', arguments);
+  /// Ungrabs the keyboard.
+  /// @platforms linux
+  Future<bool> ungrabKeyboard() async {
+    return await _channel.invokeMethod('ungrabKeyboard');
   }
 }
 

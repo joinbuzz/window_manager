@@ -252,8 +252,8 @@ public class WindowManager: NSObject, NSWindowDelegate {
         }
         
         if (args["x"] != nil && args["y"] != nil) {
-            frameRect.topLeft.x = CGFloat(args["x"] as! Float)
-            frameRect.topLeft.y = CGFloat(args["y"] as! Float)
+            frameRect.topLeft.x = CGFloat(truncating: args["x"] as! NSNumber)
+            frameRect.topLeft.y = CGFloat(truncating: args["y"] as! NSNumber)
         }
         
         if (animate) {
@@ -464,51 +464,6 @@ public class WindowManager: NSObject, NSWindowDelegate {
                 window.performDrag(with: window.currentEvent!)
             }
         }
-    }
-    
-    public func isSubWindow() -> Bool {
-        let identifier: String = mainWindow.identifier?.rawValue ?? "";
-        return identifier == "subwindow"
-    }
-    
-    public func createSubWindow(_ args: [String: Any]) {
-        let visibleFrame = NSScreen.main!.visibleFrame
-        
-        var frameRect: NSRect = NSRect.zero
-        if (args["width"] != nil && args["width"] != nil) {
-            frameRect.size.width = CGFloat(args["width"] as! Float)
-            frameRect.size.height = CGFloat(args["height"] as! Float)
-        }
-        if (args["x"] != nil && args["y"] != nil) {
-            frameRect.topLeft.x = CGFloat(args["x"] as! Float)
-            frameRect.topLeft.y = CGFloat(args["y"] as! Float)
-        }
-        
-        let center: Bool = args["center"] as! Bool
-        let title: String = args["title"] as! String
-        
-        if (center) {
-            frameRect.origin.x = (visibleFrame.width / 2) - (frameRect.size.width / 2)
-            frameRect.origin.y = (visibleFrame.height / 2) + (frameRect.size.height / 2)
-        }
-        
-        let flutterViewController = FlutterViewController.init()
-        WindowManagerPlugin.RegisterGeneratedPlugins!(flutterViewController)
-        
-        let window = SubWindow()
-        window.identifier = NSUserInterfaceItemIdentifier("subwindow")
-        window.styleMask = NSWindow.StyleMask(rawValue: 0xf)
-        window.backingType = .buffered
-        
-        window.title = title
-        window.setFrameOrigin(frameRect.origin)
-        window.setContentSize(frameRect.size)
-        
-        let windowController = NSWindowController()
-        windowController.contentViewController = flutterViewController
-        windowController.shouldCascadeWindows = true
-        windowController.window = window
-        windowController.showWindow(self)
     }
     
     // NSWindowDelegate
