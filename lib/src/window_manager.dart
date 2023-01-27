@@ -247,7 +247,7 @@ class WindowManager {
 
   /// Maximizes the window. `vertically` simulates aero snap, only works on Windows
   Future<void> maximize({bool vertically = false}) async {
-    final Map<String, dynamic> arguments = {
+    final arguments = <String, dynamic>{
       'vertically': vertically,
     };
     await _channel.invokeMethod('maximize', arguments);
@@ -417,7 +417,7 @@ class WindowManager {
 
   /// Sets whether the window can be manually resized by the user.
   Future<void> setResizable(bool isResizable) async {
-    final arguments = <String, dynamic>{
+    final Map<String, dynamic> arguments = {
       'isResizable': isResizable,
     };
     await _channel.invokeMethod('setResizable', arguments);
@@ -434,7 +434,7 @@ class WindowManager {
   ///
   /// @platforms macos
   Future<void> setMovable(bool isMovable) async {
-    final arguments = <String, dynamic>{
+    final Map<String, dynamic> arguments = {
       'isMovable': isMovable,
     };
     await _channel.invokeMethod('setMovable', arguments);
@@ -451,7 +451,7 @@ class WindowManager {
   ///
   /// @platforms macos,windows
   Future<void> setMinimizable(bool isMinimizable) async {
-    final arguments = <String, dynamic>{
+    final Map<String, dynamic> arguments = {
       'isMinimizable': isMinimizable,
     };
     await _channel.invokeMethod('setMinimizable', arguments);
@@ -473,7 +473,7 @@ class WindowManager {
 
   /// Sets whether the window can be manually maximized by the user.
   Future<void> setMaximizable(bool isMaximizable) async {
-    final arguments = <String, dynamic>{
+    final Map<String, dynamic> arguments = {
       'isMaximizable': isMaximizable,
     };
     await _channel.invokeMethod('setMaximizable', arguments);
