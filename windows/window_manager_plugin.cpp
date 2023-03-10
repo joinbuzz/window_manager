@@ -111,10 +111,11 @@ std::optional<LRESULT> WindowManagerPlugin::HandleWindowProc(HWND hWnd,
   /// added code to determine app is active or not
   /// used for isActive() method
   if (message == WM_ACTIVATE) {
-    if (LOWORD(wParam) == WA_INACTIVE) {
-      window_manager->is_active_ = true;
-    } else if (LOWORD(wParam) == WA_ACTIVE) {
+    WORD messageParam = LOWORD(wParam);
+    if (messageParam == WA_INACTIVE) {
       window_manager->is_active_ = false;
+    } else if (messageParam == WA_ACTIVE || messageParam == WA_CLICKACTIVE) {
+      window_manager->is_active_ = true;
     }
   }
 
