@@ -108,7 +108,7 @@ std::optional<LRESULT> WindowManagerPlugin::HandleWindowProc(HWND hWnd,
                                                              LPARAM lParam) {
   std::optional<LRESULT> result = std::nullopt;
 
-  /// Determine if the app is active (or not) based on the incoming WM_ACTIVATE message.
+  /// Determine if the app is active based on the incoming WM_ACTIVATE message.
   if (message == WM_ACTIVATE) {
     WORD messageParam = LOWORD(wParam);
     if (messageParam == WA_INACTIVE) {
