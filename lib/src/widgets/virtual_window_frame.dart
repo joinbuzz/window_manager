@@ -2,25 +2,22 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import './drag_to_resize_area.dart';
-import '../resize_edge.dart';
-import '../window_listener.dart';
-import '../window_manager.dart';
+import 'package:window_manager/src/resize_edge.dart';
+import 'package:window_manager/src/widgets/drag_to_resize_area.dart';
+import 'package:window_manager/src/window_listener.dart';
+import 'package:window_manager/src/window_manager.dart';
 
 final _kIsLinux = !kIsWeb && Platform.isLinux;
 final _kIsWindows = !kIsWeb && Platform.isWindows;
 
-double get kVirtualWindowFrameMargin => (_kIsLinux) ? 20.0 : 0;
-
 class VirtualWindowFrame extends StatefulWidget {
-  /// The [child] contained by the VirtualWindowFrame.
-  final Widget child;
-
   const VirtualWindowFrame({
     Key? key,
     required this.child,
   }) : super(key: key);
+
+  /// The [child] contained by the VirtualWindowFrame.
+  final Widget child;
 
   @override
   State<StatefulWidget> createState() => _VirtualWindowFrameState();
@@ -46,9 +43,6 @@ class _VirtualWindowFrameState extends State<VirtualWindowFrame>
 
   Widget _buildVirtualWindowFrame(BuildContext context) {
     return Container(
-      margin: (_isMaximized || _isFullScreen)
-          ? EdgeInsets.zero
-          : EdgeInsets.all(kVirtualWindowFrameMargin),
       decoration: BoxDecoration(
         color: Colors.transparent,
         border: Border.all(
@@ -80,15 +74,11 @@ class _VirtualWindowFrameState extends State<VirtualWindowFrame>
   Widget build(BuildContext context) {
     if (_kIsLinux) {
       return DragToResizeArea(
-        child: _buildVirtualWindowFrame(context),
-        resizeEdgeMargin: (_isMaximized || _isFullScreen)
-            ? EdgeInsets.zero
-            : EdgeInsets.all(kVirtualWindowFrameMargin * 0.6),
         enableResizeEdges: (_isMaximized || _isFullScreen) ? [] : null,
+        child: _buildVirtualWindowFrame(context),
       );
     } else if (_kIsWindows) {
       return DragToResizeArea(
-        child: widget.child,
         enableResizeEdges: (_isMaximized || _isFullScreen)
             ? []
             : [
@@ -96,6 +86,7 @@ class _VirtualWindowFrameState extends State<VirtualWindowFrame>
                 ResizeEdge.top,
                 ResizeEdge.topRight,
               ],
+        child: widget.child,
       );
     }
 
@@ -130,12 +121,14 @@ class _VirtualWindowFrameState extends State<VirtualWindowFrame>
     });
   }
 
+  @override
   void onWindowEnterFullScreen() {
     setState(() {
       _isFullScreen = true;
     });
   }
 
+  @override
   void onWindowLeaveFullScreen() {
     setState(() {
       _isFullScreen = false;

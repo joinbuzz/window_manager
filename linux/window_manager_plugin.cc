@@ -492,7 +492,16 @@ static FlMethodResponse* set_title_bar_style(WindowManagerPlugin* self,
   if (header_bar != nullptr) {
     gtk_widget_set_visible(header_bar, normal);
   } else {
-    gtk_window_set_decorated(get_window(self), normal);
+    const gchar* title = gtk_window_get_title(get_window(self));
+    if (title != nullptr) {
+      gtk_window_set_decorated(get_window(self), normal);
+    }
+  }
+
+  if (normal) {
+    // Undo set_as_frameless, so that when the title bar is shown
+    // again the window frame is also restored.
+    gtk_window_set_decorated(get_window(self), true);
   }
 
   g_free(self->title_bar_style_);

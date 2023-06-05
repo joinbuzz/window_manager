@@ -6,12 +6,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as path;
-
-import 'utils/calc_window_position.dart';
-import 'resize_edge.dart';
-import 'title_bar_style.dart';
-import 'window_listener.dart';
-import 'window_options.dart';
+import 'package:window_manager/src/resize_edge.dart';
+import 'package:window_manager/src/title_bar_style.dart';
+import 'package:window_manager/src/utils/calc_window_position.dart';
+import 'package:window_manager/src/window_listener.dart';
+import 'package:window_manager/src/window_options.dart';
 
 const kWindowEventClose = 'close';
 const kWindowEventFocus = 'focus';
@@ -38,14 +37,12 @@ class WindowManager {
 
   final MethodChannel _channel = const MethodChannel('window_manager');
 
-  final ObserverList<WindowListener>? _listeners =
+  final ObserverList<WindowListener> _listeners =
       ObserverList<WindowListener>();
 
   Future<void> _methodCallHandler(MethodCall call) async {
-    if (_listeners == null) return;
-
-    for (final listener in listeners) {
-      if (!_listeners!.contains(listener)) {
+    for (final WindowListener listener in listeners) {
+      if (!_listeners.contains(listener)) {
         return;
       }
 
@@ -68,25 +65,32 @@ class WindowManager {
         kWindowEventEnterFullScreen: listener.onWindowEnterFullScreen,
         kWindowEventLeaveFullScreen: listener.onWindowLeaveFullScreen,
       };
-      funcMap[eventName]!();
+      funcMap[eventName]?.call();
     }
   }
 
   List<WindowListener> get listeners {
-    final localListeners = List<WindowListener>.from(_listeners!);
+    final List<WindowListener> localListeners =
+        List<WindowListener>.from(_listeners);
     return localListeners;
   }
 
   bool get hasListeners {
-    return _listeners!.isNotEmpty;
+    return _listeners.isNotEmpty;
   }
 
   void addListener(WindowListener listener) {
-    _listeners!.add(listener);
+    _listeners.add(listener);
   }
 
   void removeListener(WindowListener listener) {
-    _listeners!.remove(listener);
+    _listeners.remove(listener);
+  }
+
+  double getDevicePixelRatio() {
+    // Subsequent version, remove this deprecated member.
+    // ignore: deprecated_member_use
+    return window.devicePixelRatio;
   }
 
   Future<void> ensureInitialized() async {
@@ -104,30 +108,35 @@ class WindowManager {
   ]) async {
     await _channel.invokeMethod('waitUntilReadyToShow');
 
-    var _isFullScreen = await isFullScreen();
-    var _isMaximized = await isMaximized();
-    var _isMinimized = await isMinimized();
-
-    if (_isFullScreen) await setFullScreen(false);
-    if (_isMaximized) await unmaximize();
-    if (_isMinimized) await restore();
+    if (await isFullScreen()) await setFullScreen(false);
+    if (await isMaximized()) await unmaximize();
+    if (await isMinimized()) await restore();
 
     if (options?.size != null) await setSize(options!.size!);
     if (options?.center == true) await setAlignment(Alignment.center);
-    if (options?.minimumSize != null)
+    if (options?.minimumSize != null) {
       await setMinimumSize(options!.minimumSize!);
-    if (options?.maximumSize != null)
+    }
+    if (options?.maximumSize != null) {
       await setMaximumSize(options!.maximumSize!);
-    if (options?.alwaysOnTop != null)
+    }
+    if (options?.alwaysOnTop != null) {
       await setAlwaysOnTop(options!.alwaysOnTop!);
+    }
     if (options?.fullScreen != null) await setFullScreen(options!.fullScreen!);
-    if (options?.backgroundColor != null)
+    if (options?.backgroundColor != null) {
       await setBackgroundColor(options!.backgroundColor!);
-    if (options?.skipTaskbar != null)
+    }
+    if (options?.skipTaskbar != null) {
       await setSkipTaskbar(options!.skipTaskbar!);
+    }
     if (options?.title != null) await setTitle(options!.title!);
-    if (options?.titleBarStyle != null)
-      await setTitleBarStyle(options!.titleBarStyle!);
+    if (options?.titleBarStyle != null) {
+      await setTitleBarStyle(
+        options!.titleBarStyle!,
+        windowButtonVisibility: options.windowButtonVisibility ?? true,
+      );
+    }
 
     if (callback != null) {
       callback();
@@ -310,8 +319,8 @@ class WindowManager {
     Alignment alignment, {
     bool animate = false,
   }) async {
-    var windowSize = await getSize();
-    var position = await calcWindowPosition(windowSize, alignment);
+    Size windowSize = await getSize();
+    Offset position = await calcWindowPosition(windowSize, alignment);
     await setPosition(position, animate: animate);
   }
 
@@ -319,15 +328,15 @@ class WindowManager {
   Future<void> center({
     bool animate = false,
   }) async {
-    var windowSize = await getSize();
-    var position = await calcWindowPosition(windowSize, Alignment.center);
+    Size windowSize = await getSize();
+    Offset position = await calcWindowPosition(windowSize, Alignment.center);
     await setPosition(position, animate: animate);
   }
 
   /// Returns `Rect` - The bounds of the window as Object.
   Future<Rect> getBounds() async {
-    final arguments = <String, dynamic>{
-      'devicePixelRatio': window.devicePixelRatio,
+    final Map<String, dynamic> arguments = {
+      'devicePixelRatio': getDevicePixelRatio(),
     };
     final Map<dynamic, dynamic> resultData = await _channel.invokeMethod(
       'getBounds',
@@ -349,8 +358,8 @@ class WindowManager {
     Size? size,
     bool animate = false,
   }) async {
-    final arguments = <String, dynamic>{
-      'devicePixelRatio': window.devicePixelRatio,
+    final Map<String, dynamic> arguments = {
+      'devicePixelRatio': getDevicePixelRatio(),
       'x': bounds?.topLeft.dx ?? position?.dx,
       'y': bounds?.topLeft.dy ?? position?.dy,
       'width': bounds?.size.width ?? size?.width,
@@ -392,8 +401,8 @@ class WindowManager {
 
   /// Sets the minimum size of window to `width` and `height`.
   Future<void> setMinimumSize(Size size) async {
-    final arguments = <String, dynamic>{
-      'devicePixelRatio': window.devicePixelRatio,
+    final Map<String, dynamic> arguments = {
+      'devicePixelRatio': getDevicePixelRatio(),
       'width': size.width,
       'height': size.height,
     };
@@ -402,8 +411,8 @@ class WindowManager {
 
   /// Sets the maximum size of window to `width` and `height`.
   Future<void> setMaximumSize(Size size) async {
-    final arguments = <String, dynamic>{
-      'devicePixelRatio': window.devicePixelRatio,
+    final Map<String, dynamic> arguments = {
+      'devicePixelRatio': getDevicePixelRatio(),
       'width': size.width,
       'height': size.height,
     };
@@ -509,7 +518,7 @@ class WindowManager {
 
   /// Sets whether the window should show always below other windows.
   ///
-  /// @platforms linux
+  /// @platforms linux,windows
   Future<void> setAlwaysOnBottom(bool isAlwaysOnBottom) async {
     final arguments = <String, dynamic>{
       'isAlwaysOnBottom': isAlwaysOnBottom,
@@ -583,6 +592,50 @@ class WindowManager {
     };
 
     await _channel.invokeMethod('setIcon', arguments);
+  }
+
+  /// Returns `bool` - Whether the window is visible on all workspaces.
+  ///
+  /// @platforms macos
+  Future<bool> isVisibleOnAllWorkspaces() async {
+    return await _channel.invokeMethod('isVisibleOnAllWorkspaces');
+  }
+
+  /// Sets whether the window should be visible on all workspaces.
+  ///
+  /// Note: If you need to support dragging a window on top of a fullscreen
+  /// window on another screen, you need to modify MainFlutterWindow
+  /// to inherit from NSPanel
+  ///
+  /// ```swift
+  /// class MainFlutterWindow: NSPanel {
+  ///     // ...
+  /// }
+  /// ```
+  ///
+  /// @platforms macos
+  Future<void> setVisibleOnAllWorkspaces(
+    bool visible, {
+    bool? visibleOnFullScreen,
+  }) async {
+    final Map<String, dynamic> arguments = {
+      'visible': visible,
+      'visibleOnFullScreen': visibleOnFullScreen ?? false,
+    };
+    await _channel.invokeMethod('setVisibleOnAllWorkspaces', arguments);
+  }
+
+  /// Set/unset label on taskbar(dock) app icon
+  ///
+  /// Note that it's required to request access at your AppDelegate.swift like this:
+  /// UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge])
+  ///
+  /// @platforms macos
+  Future<void> setBadgeLabel([String? label]) async {
+    final Map<String, dynamic> arguments = {
+      'label': label ?? '',
+    };
+    await _channel.invokeMethod('setBadgeLabel', arguments);
   }
 
   /// Returns `bool` - Whether the window has a shadow. On Windows, always returns true unless window is frameless.

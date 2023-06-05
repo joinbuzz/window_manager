@@ -117,6 +117,13 @@ public class WindowManagerPlugin: NSObject, FlutterPlugin {
         case "isMinimized":
             result(windowManager.isMinimized())
             break
+        case "isMaximizable":
+            result(windowManager.isMaximizable())
+            break
+        case "setMaximizable":
+            windowManager.setIsMaximizable(args)
+            result(true)
+            break
         case "minimize":
             windowManager.minimize()
             result(true)
@@ -211,8 +218,19 @@ public class WindowManagerPlugin: NSObject, FlutterPlugin {
             windowManager.setSkipTaskbar(args)
             result(true)
             break
+        case "setBadgeLabel":
+            windowManager.setBadgeLabel(args)
+            result(true)
+            break
         case "setProgressBar":
             windowManager.setProgressBar(args)
+            result(true)
+            break
+        case "isVisibleOnAllWorkspaces":
+            result(windowManager.isVisibleOnAllWorkspaces())
+            break
+        case "setVisibleOnAllWorkspaces":
+            windowManager.setVisibleOnAllWorkspaces(args)
             result(true)
             break
         case "hasShadow":

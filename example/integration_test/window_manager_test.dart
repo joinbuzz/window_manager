@@ -9,7 +9,7 @@ Future<void> main() async {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
   await windowManager.waitUntilReadyToShow(
-    WindowOptions(
+    const WindowOptions(
       size: Size(640, 480),
       title: 'window_manager_test',
     ),
@@ -21,7 +21,7 @@ Future<void> main() async {
 
   testWidgets('getBounds', (tester) async {
     expect(await windowManager.getBounds(),
-        isA<Rect>().having((r) => r.size, 'size', Size(640, 480)));
+        isA<Rect>().having((r) => r.size, 'size', const Size(640, 480)));
   });
 
   testWidgets('isAlwaysOnBottom', (tester) async {
@@ -50,7 +50,7 @@ Future<void> main() async {
 
   testWidgets('isMaximizable', (tester) async {
     expect(await windowManager.isMaximizable(), isTrue);
-  }, skip: Platform.isMacOS);
+  });
 
   testWidgets('isMaximized', (tester) async {
     expect(await windowManager.isMaximized(), isFalse);
@@ -85,7 +85,7 @@ Future<void> main() async {
   });
 
   testWidgets('getSize', (tester) async {
-    expect(await windowManager.getSize(), Size(640, 480));
+    expect(await windowManager.getSize(), const Size(640, 480));
   });
 
   testWidgets('isSkipTaskbar', (tester) async {
